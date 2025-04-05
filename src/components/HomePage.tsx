@@ -180,45 +180,49 @@ const HomePage: React.FC<HomePageProps> = ({
       <div className="max-w-6xl mx-auto">
         <div className="bg-white dark:bg-[#111111] rounded-2xl shadow-xl p-8 transition-colors duration-300">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-8">
             <div className="flex items-center gap-3">
               <Home className="w-8 h-8 text-rose-600 dark:text-rose-500" />
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Featured Properties</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">Featured Properties</h1>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
               <button
                 onClick={onNavigateToProject}
-                className="flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors"
               >
                 Go to House Prediction
                 <ArrowRight className="w-4 h-4" />
               </button>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                Welcome, {userEmail}
+              <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Welcome, {userEmail}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={onLogout}
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    aria-label="Logout"
+                  >
+                    <LogOut className="w-6 h-6 text-rose-600 dark:text-rose-500" />
+                  </button>
+                  <button
+                    onClick={() => setIsDarkMode(!isDarkMode)}
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    aria-label="Toggle dark mode"
+                  >
+                    {isDarkMode ? (
+                      <Sun className="w-6 h-6 text-yellow-500" />
+                    ) : (
+                      <Moon className="w-6 h-6 text-gray-600" />
+                    )}
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={onLogout}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Logout"
-              >
-                <LogOut className="w-6 h-6 text-rose-600 dark:text-rose-500" />
-              </button>
-              <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Toggle dark mode"
-              >
-                {isDarkMode ? (
-                  <Sun className="w-6 h-6 text-yellow-500" />
-                ) : (
-                  <Moon className="w-6 h-6 text-gray-600" />
-                )}
-              </button>
             </div>
           </div>
 
           {/* Featured Properties Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
             {SAMPLE_PROPERTIES.map((property) => (
               <div
                 key={property.id}
@@ -230,19 +234,19 @@ const HomePage: React.FC<HomePageProps> = ({
                     alt={`Property in ${property.location}`}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-4 right-4 bg-white dark:bg-gray-800 px-3 py-1 rounded-full text-rose-600 font-semibold">
+                  <div className="absolute top-4 right-4 bg-white dark:bg-gray-800 px-3 py-1 rounded-full text-rose-600 font-semibold text-sm">
                     {formatPrice(property.price)}
                   </div>
                 </div>
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-semibold text-gray-800 dark:text-white">{property.ownerName}</h3>
+                    <h3 className="font-semibold text-gray-800 dark:text-white text-base sm:text-lg">{property.ownerName}</h3>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm mb-2">
-                    <MapPin className="w-4 h-4" />
-                    {property.location}
+                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-2">
+                    <MapPin className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{property.location}</span>
                   </div>
-                  <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 text-sm mb-3">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-3">
                     <div className="flex items-center gap-1">
                       <Bed className="w-4 h-4" />
                       {property.bedrooms}
@@ -256,7 +260,7 @@ const HomePage: React.FC<HomePageProps> = ({
                       {property.squareFeet} sq.ft
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 text-sm">
+                  <div className="flex items-center gap-3 text-xs sm:text-sm">
                     <a
                       href={`tel:${property.contact.phone}`}
                       className="flex items-center gap-1 text-blue-600 hover:text-blue-700"
@@ -278,13 +282,13 @@ const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Add Person Section Title */}
-          <div className="flex items-center gap-3 mb-8">
-            <Users className="w-8 h-8 text-rose-600 dark:text-rose-500" />
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Add Person Details</h2>
+          <div className="flex items-center gap-3 mb-6 sm:mb-8">
+            <Users className="w-6 sm:w-8 h-6 sm:h-8 text-rose-600 dark:text-rose-500" />
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">Add Person Details</h2>
           </div>
 
           {/* Input Form */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
             <div>
               <input
                 type="text"
@@ -343,44 +347,44 @@ const HomePage: React.FC<HomePageProps> = ({
           <button
             onClick={handleAddPerson}
             disabled={people.length >= 10}
-            className="w-full bg-rose-600 text-white py-3 rounded-lg hover:bg-rose-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed mb-8"
+            className="w-full bg-rose-600 text-white py-2 sm:py-3 rounded-lg hover:bg-rose-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed mb-6 sm:mb-8 text-sm sm:text-base"
           >
             <UserPlus className="w-5 h-5" />
             Add Person ({people.length}/10)
           </button>
 
           {/* People List */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {people.map((person) => (
               <div
                 key={person.id}
-                className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg flex justify-between items-center"
+                className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0"
               >
                 <div>
-                  <h3 className="font-semibold text-gray-800 dark:text-white">{person.name}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <h3 className="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">{person.name}</h3>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                     {person.occupation} • {person.age} years • ₹{person.income.toLocaleString('en-IN')}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-500">
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500">
                     {person.email} • {person.phone}
                   </p>
                 </div>
                 <button
                   onClick={() => handleDeletePerson(person.id)}
-                  className="p-2 text-red-500 hover:bg-red-100 rounded-full transition-colors"
+                  className="self-end sm:self-center p-2 text-red-500 hover:bg-red-100 rounded-full transition-colors"
                 >
-                  <Trash2 className="w-5 h-5" />
+                  <Trash2 className="w-4 sm:w-5 h-4 sm:h-5" />
                 </button>
               </div>
             ))}
           </div>
 
           {/* Bottom Buttons */}
-          <div className="mt-8 space-y-4">
+          <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
             {people.length >= 5 && (
               <button
                 onClick={onNavigateToProject}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-blue-600 text-white py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 Continue to Project
               </button>
