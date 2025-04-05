@@ -26,9 +26,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSwitchToSignup }) => {
       });
 
       if (error) {
-        if (error.message.includes('Email not confirmed')) {
-          throw new Error('Please confirm your email before logging in');
-        } else if (error.message.includes('Invalid login credentials')) {
+        if (error.message.includes('Invalid login credentials')) {
           throw new Error('Invalid email or password');
         } else {
           throw error;

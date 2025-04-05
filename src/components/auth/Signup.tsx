@@ -30,7 +30,7 @@ const Signup: React.FC<SignupProps> = ({ onSignup, onSwitchToLogin }) => {
         throw new Error('Password must be at least 6 characters long');
       }
 
-      // First, sign up the user
+      // Sign up the user without email confirmation
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -44,17 +44,15 @@ const Signup: React.FC<SignupProps> = ({ onSignup, onSwitchToLogin }) => {
 
       if (signUpError) throw signUpError;
 
-      // If signup is successful, immediately sign in
-      if (signUpData.user) {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+      // Immediately sign in after signup
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-        if (signInError) throw signInError;
+      if (signInError) throw signInError;
 
-        onSignup(email);
-      }
+      onSignup(email);
     } catch (error: any) {
       setError(error.message || 'An error occurred during signup');
     } finally {
