@@ -38,21 +38,46 @@ const Signup: React.FC<SignupProps> = ({ onSignup, onSwitchToLogin }) => {
           data: {
             full_name: name,
           },
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: null,
+          shouldCreateUser: true,
+          emailConfirm: false
         },
       });
 
-      if (signUpError) throw signUpError;
+      if (signUpError) {
+        if (signUpError.message.includes('User already registered')) {
+          // If user exists, try to sign in directly
+          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
 
-      // Immediately sign in after signup
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+          if (signInError) throw signInError;
+          if (signInData.user) {
+            onSignup(email);
+            return;
+          }
+        }
+        throw signUpError;
+      }
+
+      // If signup successful, immediately sign in
+      if (signUpData.user) {
+        onSignup(email);
+        return;
+      }
+
+      // Fallback sign in attempt
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (signInError) throw signInError;
 
-      onSignup(email);
+      if (signInData.user) {
+        onSignup(email);
+      }
     } catch (error: any) {
       setError(error.message || 'An error occurred during signup');
     } finally {

@@ -26,11 +26,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSwitchToSignup }) => {
       });
 
       if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          throw new Error('Invalid email or password');
-        } else {
-          throw error;
-        }
+        throw new Error('Invalid email or password');
       }
 
       if (data.user) {
