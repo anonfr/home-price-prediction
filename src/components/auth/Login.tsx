@@ -97,7 +97,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSwitchToSignup }) => {
           disabled={loading}
           className="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Signing in...' : 'Sign In'}
+          {loading ? 'Logging in...' : 'Login In'}
         </button>
 
         <div className="text-center">

@@ -184,7 +184,7 @@ const Signup: React.FC<SignupProps> = ({ onSignup, onSwitchToLogin }) => {
               onClick={onSwitchToLogin}
               className="text-rose-600 dark:text-rose-500 hover:underline"
             >
-              Sign In
+              Login In
             </button>
           </p>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Calendar, Bed, Bath, Building2, Calculator, IndianRupee, TrendingUp, MapPin, Square, Moon, Sun, LogOut } from 'lucide-react';
+import { Home, Calendar, Bed, Bath, Building2, Calculator, IndianRupee, TrendingUp, MapPin, Square, Moon, Sun, LogOut, ArrowLeft } from 'lucide-react';
 import AuthPage from './components/auth/AuthPage';
+import HomePage from './components/HomePage';
 import { supabase } from './lib/supabase';
 
 interface PredictionInputs {
@@ -63,6 +64,7 @@ function App() {
     const saved = localStorage.getItem('darkMode');
     return saved ? JSON.parse(saved) : false;
   });
+  const [currentPage, setCurrentPage] = useState<'home' | 'project'>('home');
 
   const [inputs, setInputs] = useState<PredictionInputs>({
     bedrooms: 3,
@@ -118,11 +120,16 @@ function App() {
     }
   };
 
-  if (!isAuthenticated) {
-    return <AuthPage onAuthenticated={handleAuthentication} />;
-  }
+  const handleSquareFeetChange = (value: number) => {
+    const clampedValue = Math.min(Math.max(value, 200), 20000);
+    setInputs({ ...inputs, squareFeet: clampedValue });
+  };
 
-  // Simple prediction model (for demonstration)
+  const handleFloorsChange = (value: number) => {
+    const clampedValue = Math.min(Math.max(value, 1), 30);
+    setInputs({ ...inputs, floors: clampedValue });
+  };
+
   const predictPrice = () => {
     // Basic formula: This is a simplified model for demonstration
     const basePrice = 2500000; // 25 Lakhs base price
@@ -150,24 +157,21 @@ function App() {
     return formatter.format(price);
   };
 
-  const handleSquareFeetChange = (value: number) => {
-    const clampedValue = Math.min(Math.max(value, 200), 20000);
-    setInputs({ ...inputs, squareFeet: clampedValue });
-  };
-
-  const handleFloorsChange = (value: number) => {
-    const clampedValue = Math.min(Math.max(value, 1), 30);
-    setInputs({ ...inputs, floors: clampedValue });
-  };
-
-  return (
+  // Project page content
+  const ProjectContent = () => (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-rose-50 dark:from-black dark:to-black p-6 transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white dark:bg-[#111111] rounded-2xl shadow-xl p-8 transition-colors duration-300">
+          {/* Project Header with Back Button */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-              <Home className="w-8 h-8 text-rose-600 dark:text-rose-500" />
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Indian House Price Predictor</h1>
+              <button
+                onClick={() => setCurrentPage('home')}
+                className="flex items-center gap-2 text-rose-600 dark:text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 transition-colors"
+              >
+                <ArrowLeft className="w-6 h-6" />
+                <span className="text-sm font-medium">Back to Home</span>
+              </button>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -192,6 +196,12 @@ function App() {
                 )}
               </button>
             </div>
+          </div>
+
+          {/* Rest of the project content */}
+          <div className="flex items-center gap-3 mb-8">
+            <Home className="w-8 h-8 text-rose-600 dark:text-rose-500" />
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Indian House Price Predictor</h1>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -268,7 +278,7 @@ function App() {
                 </label>
                 <select
                   value={inputs.floors}
-                  onChange={(e) => setInputs({ ...inputs, floors: Number(e.target.value) })}
+                  onChange={(e) => handleFloorsChange(Number(e.target.value))}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
                 >
                   {FLOORS.map(floor => (
@@ -354,6 +364,24 @@ function App() {
       </div>
     </div>
   );
+
+  if (!isAuthenticated) {
+    return <AuthPage onAuthenticated={handleAuthentication} />;
+  }
+
+  if (currentPage === 'home') {
+    return (
+      <HomePage
+        userEmail={userEmail}
+        onLogout={handleLogout}
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
+        onNavigateToProject={() => setCurrentPage('project')}
+      />
+    );
+  }
+
+  return <ProjectContent />;
 }
 
 export default App;
