@@ -185,111 +185,113 @@ const HomePage: React.FC<HomePageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-rose-50 dark:from-black dark:to-black p-6 transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-rose-50 dark:from-black dark:to-black p-3 sm:p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-white dark:bg-[#111111] rounded-2xl shadow-xl p-8 transition-colors duration-300">
+        <div className="bg-white dark:bg-[#111111] rounded-2xl shadow-xl p-4 sm:p-8 transition-colors duration-300">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 mb-6 sm:mb-8">
             <div className="flex items-center gap-3">
-              <Home className="w-8 h-8 text-rose-600 dark:text-rose-500" />
-              <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Indian House Price Predictor</h1>
+              <Home className="w-7 h-7 sm:w-8 sm:h-8 text-rose-600 dark:text-rose-500" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">Indian House Price Predictor</h1>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex items-center justify-between sm:justify-end gap-4">
+              <div className="text-sm text-gray-600 dark:text-gray-400 truncate">
                 Welcome, {userEmail}
               </div>
-              <button
-                onClick={onLogout}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Logout"
-              >
-                <LogOut className="w-6 h-6 text-rose-600 dark:text-rose-500" />
-              </button>
-              <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Toggle dark mode"
-              >
-                {isDarkMode ? (
-                  <Sun className="w-6 h-6 text-yellow-500" />
-                ) : (
-                  <Moon className="w-6 h-6 text-gray-600" />
-                )}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onLogout}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  aria-label="Logout"
+                >
+                  <LogOut className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600 dark:text-rose-500" />
+                </button>
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  aria-label="Toggle dark mode"
+                >
+                  {isDarkMode ? (
+                    <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
+                  ) : (
+                    <Moon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
           {/* New Prediction Button */}
           <button
             onClick={onNavigateToProject}
-            className="w-full bg-rose-600 text-white py-3 rounded-lg hover:bg-rose-700 transition-colors mb-8 flex items-center justify-center gap-2"
+            className="w-full bg-rose-600 text-white py-2.5 sm:py-3 rounded-lg hover:bg-rose-700 transition-colors mb-6 sm:mb-8 flex items-center justify-center gap-2 text-sm sm:text-base"
           >
-            <Home className="w-5 h-5" />
+            <Home className="w-4 h-4 sm:w-5 sm:h-5" />
             Make New Prediction
           </button>
 
           {/* Saved Predictions */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Recent Predictions</h2>
+          <div className="space-y-4 sm:space-y-6">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white mb-4">Recent Predictions</h2>
             
             {loading ? (
               <div className="text-center text-gray-600 dark:text-gray-400">Loading predictions...</div>
             ) : savedPredictions.length === 0 ? (
               <div className="text-center text-gray-600 dark:text-gray-400">No predictions saved yet.</div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {savedPredictions.map((prediction) => (
                   <div
                     key={prediction.id}
-                    className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 space-y-4 relative group"
+                    className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 sm:p-6 space-y-3 sm:space-y-4 relative group"
                   >
                     {prediction.user_email === userEmail && (
                       <button
                         onClick={() => handleDelete(prediction.id, prediction.user_email)}
-                        className="absolute top-4 right-4 p-2 rounded-full bg-white dark:bg-gray-800 text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-50 dark:hover:bg-gray-700"
+                        className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 rounded-full bg-white dark:bg-gray-800 text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-50 dark:hover:bg-gray-700"
                         title="Delete prediction"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     )}
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-2">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-rose-600 dark:text-rose-500" />
                           <span className="font-medium text-gray-900 dark:text-white">{prediction.location}</span>
                         </div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                        <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                           by {prediction.user_email}
                         </div>
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                      <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                         Saved on {formatDate(prediction.created_at)}
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
                       <div className="flex items-center gap-2">
                         <Bed className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{prediction.bedrooms} Beds</span>
+                        <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{prediction.bedrooms} Beds</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Bath className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{prediction.bathrooms} Baths</span>
+                        <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{prediction.bathrooms} Baths</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Building2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{prediction.floors} Floors</span>
+                        <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{prediction.floors} Floors</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Built {prediction.year_built}</span>
+                        <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Built {prediction.year_built}</span>
                       </div>
                     </div>
 
                     <div className="pt-2">
                       <div className="flex items-center gap-2">
-                        <IndianRupee className="w-5 h-5 text-green-600 dark:text-green-500" />
-                        <span className="text-lg font-semibold text-green-600 dark:text-green-500">
+                        <IndianRupee className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-500" />
+                        <span className="text-base sm:text-lg font-semibold text-green-600 dark:text-green-500">
                           {formatIndianPrice(prediction.predicted_price)}
                         </span>
                       </div>

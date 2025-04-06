@@ -221,62 +221,64 @@ function App() {
 
   // Project page content
   const ProjectContent = () => (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-rose-50 dark:from-black dark:to-black p-6 transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-rose-50 dark:from-black dark:to-black p-3 sm:p-6 transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white dark:bg-[#111111] rounded-2xl shadow-xl p-8 transition-colors duration-300">
+        <div className="bg-white dark:bg-[#111111] rounded-2xl shadow-xl p-4 sm:p-8 transition-colors duration-300">
           {/* Project Header with Back Button */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 mb-6 sm:mb-8">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setCurrentPage('home')}
                 className="flex items-center gap-2 text-rose-600 dark:text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 transition-colors"
               >
-                <ArrowLeft className="w-6 h-6" />
-                <span className="text-sm font-medium">Back to Home</span>
+                <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                <span className="text-sm sm:text-base font-medium">Back to Home</span>
               </button>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex items-center justify-between sm:justify-end gap-4">
+              <div className="text-sm text-gray-600 dark:text-gray-400 truncate">
                 Welcome, {userEmail}
               </div>
-              <button
-                onClick={handleLogout}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Logout"
-              >
-                <LogOut className="w-6 h-6 text-rose-600 dark:text-rose-500" />
-              </button>
-              <button
-                onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Toggle dark mode"
-              >
-                {isDarkMode ? (
-                  <Sun className="w-6 h-6 text-yellow-500" />
-                ) : (
-                  <Moon className="w-6 h-6 text-gray-600" />
-                )}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleLogout}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  aria-label="Logout"
+                >
+                  <LogOut className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600 dark:text-rose-500" />
+                </button>
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  aria-label="Toggle dark mode"
+                >
+                  {isDarkMode ? (
+                    <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
+                  ) : (
+                    <Moon className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Rest of the project content */}
-          <div className="flex items-center gap-3 mb-8">
-            <Home className="w-8 h-8 text-rose-600 dark:text-rose-500" />
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Indian House Price Predictor</h1>
+          <div className="flex flex-col sm:flex-row items-center gap-3 mb-6 sm:mb-8">
+            <Home className="w-7 h-7 sm:w-8 sm:h-8 text-rose-600 dark:text-rose-500" />
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white text-center sm:text-left">Indian House Price Predictor</h1>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
+            <div className="space-y-4 sm:space-y-6">
               <div>
-                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
-                  <MapPin className="w-5 h-5" />
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 text-sm sm:text-base">
+                  <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>Location</span>
                 </label>
                 <select
                   value={inputs.location}
                   onChange={(e) => setInputs({ ...inputs, location: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white text-sm sm:text-base"
                 >
                   {LOCATIONS.map(location => (
                     <option key={location} value={location}>{location}</option>
@@ -285,8 +287,8 @@ function App() {
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
-                  <Square className="w-5 h-5" />
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 text-sm sm:text-base">
+                  <Square className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>Square Feet (200-20,000)</span>
                 </label>
                 <input
@@ -297,13 +299,13 @@ function App() {
                   min="200"
                   max="20000"
                   step="50"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white text-sm sm:text-base"
                 />
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
-                  <Bed className="w-5 h-5" />
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 text-sm sm:text-base">
+                  <Bed className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>Number of Bedrooms</span>
                 </label>
                 <input
@@ -312,13 +314,13 @@ function App() {
                   onChange={(e) => setInputs({ ...inputs, bedrooms: Math.min(Math.max(Number(e.target.value), 1), 120) })}
                   min="1"
                   max="120"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white text-sm sm:text-base"
                 />
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
-                  <Bath className="w-5 h-5" />
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 text-sm sm:text-base">
+                  <Bath className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>Number of Bathrooms</span>
                 </label>
                 <input
@@ -327,21 +329,21 @@ function App() {
                   onChange={(e) => setInputs({ ...inputs, bathrooms: Math.min(Math.max(Number(e.target.value), 1), 100) })}
                   min="1"
                   max="100"
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white text-sm sm:text-base"
                 />
               </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <div>
-                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
-                  <Building2 className="w-5 h-5" />
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 text-sm sm:text-base">
+                  <Building2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>Number of Floors</span>
                 </label>
                 <select
                   value={inputs.floors}
                   onChange={(e) => handleFloorsChange(Number(e.target.value))}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white text-sm sm:text-base"
                 >
                   {FLOORS.map(floor => (
                     <option key={floor} value={floor}>
@@ -352,14 +354,14 @@ function App() {
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
-                  <Calendar className="w-5 h-5" />
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 text-sm sm:text-base">
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>Year Built</span>
                 </label>
                 <select
                   value={inputs.yearBuilt}
                   onChange={(e) => setInputs({ ...inputs, yearBuilt: Number(e.target.value) })}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
+                  className="w-full px-3 sm:px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white text-sm sm:text-base"
                 >
                   {YEARS.map(year => (
                     <option key={year} value={year}>{year}</option>
@@ -368,8 +370,8 @@ function App() {
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2">
-                  <TrendingUp className="w-5 h-5" />
+                <label className="flex items-center gap-2 text-gray-700 dark:text-gray-300 mb-2 text-sm sm:text-base">
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span>Projection Years: {inputs.projectionYears}</span>
                 </label>
                 <div className="relative py-2">
@@ -439,12 +441,12 @@ function App() {
             </div>
           </div>
 
-          <div className="flex gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row gap-4 mb-6 sm:mb-8">
             <button
               onClick={predictPrice}
-              className="flex-1 bg-rose-600 text-white py-3 rounded-lg hover:bg-rose-700 transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-rose-600 text-white py-2.5 sm:py-3 rounded-lg hover:bg-rose-700 transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
             >
-              <Calculator className="w-5 h-5" />
+              <Calculator className="w-4 h-4 sm:w-5 sm:h-5" />
               Calculate Prediction
             </button>
 
@@ -452,13 +454,13 @@ function App() {
               <button
                 onClick={savePrediction}
                 disabled={isSaving}
-                className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-green-600 text-white py-2.5 sm:py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
                 {isSaving ? (
                   <span>Saving...</span>
                 ) : (
                   <>
-                    <span className="w-5 h-5">💾</span>
+                    <span className="w-4 h-4 sm:w-5 sm:h-5">💾</span>
                     Save Prediction
                   </>
                 )}
@@ -467,23 +469,23 @@ function App() {
           </div>
 
           {currentPrice && futurePrice && (
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-blue-50 p-6 rounded-xl">
-                <div className="flex items-center gap-2 mb-4">
-                  <IndianRupee className="w-6 h-6 text-blue-600" />
-                  <h3 className="text-xl font-semibold text-gray-800">Current Estimated Price</h3>
+            <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div className="bg-blue-50 p-4 sm:p-6 rounded-xl">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <IndianRupee className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-800">Current Estimated Price</h3>
                 </div>
-                <p className="text-3xl font-bold text-blue-600">
+                <p className="text-2xl sm:text-3xl font-bold text-blue-600">
                   {formatIndianPrice(currentPrice)}
                 </p>
               </div>
 
-              <div className="bg-green-50 p-6 rounded-xl">
-                <div className="flex items-center gap-2 mb-4">
-                  <TrendingUp className="w-6 h-6 text-green-600" />
-                  <h3 className="text-xl font-semibold text-gray-800">{inputs.projectionYears}-Year Projection</h3>
+              <div className="bg-green-50 p-4 sm:p-6 rounded-xl">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-800">{inputs.projectionYears}-Year Projection</h3>
                 </div>
-                <p className="text-3xl font-bold text-green-600">
+                <p className="text-2xl sm:text-3xl font-bold text-green-600">
                   {formatIndianPrice(futurePrice)}
                 </p>
               </div>
