@@ -24,6 +24,7 @@ const LOCATIONS = [
 ].sort();
 
 const FLOORS = Array.from({ length: 31 }, (_, i) => i.toString());
+const YEARS = Array.from({ length: 126 }, (_, i) => (1900 + i).toString());
 
 const LOCATION_MULTIPLIERS: { [key: string]: number } = {
   'Mumbai': 2.5,
@@ -78,12 +79,19 @@ function App() {
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
   const [futurePrice, setFuturePrice] = useState<number | null>(null);
 
+  const [isSaving, setIsSaving] = useState(false);
+  const [user, setUser] = useState<{ id: string; email: string } | null>(null);
+
   useEffect(() => {
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setIsAuthenticated(true);
         setUserEmail(session.user.email || '');
+        setUser({
+          id: session.user.id,
+          email: session.user.email || ''
+        });
       }
     });
 
@@ -91,6 +99,14 @@ function App() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session);
       setUserEmail(session?.user?.email || '');
+      if (session) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email || ''
+        });
+      } else {
+        setUser(null);
+      }
     });
 
     return () => {
@@ -155,6 +171,52 @@ function App() {
       maximumFractionDigits: 0
     });
     return formatter.format(price);
+  };
+
+  const savePrediction = async () => {
+    if (!currentPrice || !user) {
+      console.error('Missing required data:', { currentPrice, user });
+      alert('Missing required data for saving prediction');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const predictionData = {
+        user_id: user.id,
+        user_email: user.email,
+        bedrooms: inputs.bedrooms,
+        bathrooms: inputs.bathrooms,
+        floors: inputs.floors,
+        year_built: inputs.yearBuilt,
+        location: inputs.location,
+        square_feet: inputs.squareFeet,
+        predicted_price: currentPrice,
+        created_at: new Date().toISOString()
+      };
+
+      console.log('Attempting to save prediction with data:', predictionData);
+
+      const { data, error } = await supabase
+        .from('property_predictions')
+        .insert([predictionData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase error:', error);
+        throw new Error(error.message);
+      }
+
+      console.log('Successfully saved prediction:', data);
+      alert('Prediction saved successfully!');
+    } catch (error) {
+      console.error('Full error object:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Failed to save prediction: ${errorMessage}`);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Project page content
@@ -247,9 +309,9 @@ function App() {
                 <input
                   type="number"
                   value={inputs.bedrooms}
-                  onChange={(e) => setInputs({ ...inputs, bedrooms: Number(e.target.value) })}
+                  onChange={(e) => setInputs({ ...inputs, bedrooms: Math.min(Math.max(Number(e.target.value), 1), 120) })}
                   min="1"
-                  max="10"
+                  max="120"
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
                 />
               </div>
@@ -262,9 +324,9 @@ function App() {
                 <input
                   type="number"
                   value={inputs.bathrooms}
-                  onChange={(e) => setInputs({ ...inputs, bathrooms: Number(e.target.value) })}
+                  onChange={(e) => setInputs({ ...inputs, bathrooms: Math.min(Math.max(Number(e.target.value), 1), 100) })}
                   min="1"
-                  max="10"
+                  max="100"
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
                 />
               </div>
@@ -294,18 +356,15 @@ function App() {
                   <Calendar className="w-5 h-5" />
                   <span>Year Built</span>
                 </label>
-                <input
-                  type="number"
+                <select
                   value={inputs.yearBuilt}
-                  onChange={(e) => {
-                    const year = Number(e.target.value);
-                    const clampedYear = Math.min(Math.max(year, 1900), 2025);
-                    setInputs({ ...inputs, yearBuilt: clampedYear });
-                  }}
-                  min="1900"
-                  max="2025"
+                  onChange={(e) => setInputs({ ...inputs, yearBuilt: Number(e.target.value) })}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
-                />
+                >
+                  {YEARS.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
               </div>
 
               <div>
@@ -313,29 +372,99 @@ function App() {
                   <TrendingUp className="w-5 h-5" />
                   <span>Projection Years: {inputs.projectionYears}</span>
                 </label>
-                <input
-                  type="range"
-                  value={inputs.projectionYears}
-                  onChange={(e) => setInputs({ ...inputs, projectionYears: Number(e.target.value) })}
-                  min="1"
-                  max="100"
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-rose-600"
-                />
-                <div className="flex justify-between text-sm text-gray-500 mt-1">
-                  <span>1 year</span>
-                  <span>100 years</span>
+                <div className="relative py-2">
+                  <input
+                    type="range"
+                    value={inputs.projectionYears}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      setInputs({ ...inputs, projectionYears: value });
+                    }}
+                    min="1"
+                    max="100"
+                    step="1"
+                    className="relative w-full h-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer
+                      [&::-webkit-slider-thumb]:appearance-none
+                      [&::-webkit-slider-thumb]:w-5
+                      [&::-webkit-slider-thumb]:h-5
+                      [&::-webkit-slider-thumb]:bg-rose-600
+                      [&::-webkit-slider-thumb]:dark:bg-rose-500
+                      [&::-webkit-slider-thumb]:rounded-full
+                      [&::-webkit-slider-thumb]:border-2
+                      [&::-webkit-slider-thumb]:border-white
+                      [&::-webkit-slider-thumb]:dark:border-gray-900
+                      [&::-webkit-slider-thumb]:shadow-md
+                      [&::-webkit-slider-thumb]:hover:shadow-lg
+                      [&::-webkit-slider-thumb]:transition-all
+                      [&::-webkit-slider-thumb]:hover:scale-110
+                      [&::-webkit-slider-thumb]:translate-y-[-3px]
+                      
+                      [&::-moz-range-thumb]:appearance-none
+                      [&::-moz-range-thumb]:w-5
+                      [&::-moz-range-thumb]:h-5
+                      [&::-moz-range-thumb]:bg-rose-600
+                      [&::-moz-range-thumb]:dark:bg-rose-500
+                      [&::-moz-range-thumb]:rounded-full
+                      [&::-moz-range-thumb]:border-2
+                      [&::-moz-range-thumb]:border-white
+                      [&::-moz-range-thumb]:dark:border-gray-900
+                      [&::-moz-range-thumb]:shadow-md
+                      [&::-moz-range-thumb]:hover:shadow-lg
+                      [&::-moz-range-thumb]:transition-all
+                      [&::-moz-range-thumb]:hover:scale-110
+                      [&::-moz-range-thumb]:translate-y-[-3px]
+                      
+                      [&::-webkit-slider-runnable-track]:h-2.5
+                      [&::-webkit-slider-runnable-track]:rounded-lg
+                      [&::-webkit-slider-runnable-track]:bg-gray-200
+                      [&::-webkit-slider-runnable-track]:dark:bg-gray-700
+                      
+                      [&::-moz-range-track]:h-2.5
+                      [&::-moz-range-track]:rounded-lg
+                      [&::-moz-range-track]:bg-gray-200
+                      [&::-moz-range-track]:dark:bg-gray-700
+                      
+                      focus:outline-none
+                      focus:ring-2
+                      focus:ring-rose-500
+                      focus:ring-offset-2
+                      dark:focus:ring-offset-gray-900"
+                  />
+                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-2">
+                    <span>1 year</span>
+                    <span>100 years</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <button
-            onClick={predictPrice}
-            className="w-full bg-rose-600 text-white py-3 rounded-lg hover:bg-rose-700 transition-colors flex items-center justify-center gap-2"
-          >
-            <Calculator className="w-5 h-5" />
-            Calculate Prediction
-          </button>
+          <div className="flex gap-4 mb-8">
+            <button
+              onClick={predictPrice}
+              className="flex-1 bg-rose-600 text-white py-3 rounded-lg hover:bg-rose-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <Calculator className="w-5 h-5" />
+              Calculate Prediction
+            </button>
+
+            {currentPrice && (
+              <button
+                onClick={savePrediction}
+                disabled={isSaving}
+                className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSaving ? (
+                  <span>Saving...</span>
+                ) : (
+                  <>
+                    <span className="w-5 h-5">💾</span>
+                    Save Prediction
+                  </>
+                )}
+              </button>
+            )}
+          </div>
 
           {currentPrice && futurePrice && (
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
