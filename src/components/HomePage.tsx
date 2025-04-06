@@ -1,16 +1,6 @@
-import React, { useState } from 'react';
-import { Users, UserPlus, Save, Trash2, Moon, Sun, LogOut, ArrowRight, Home, Phone, Mail, IndianRupee, MapPin, Bed, Bath, Square } from 'lucide-react';
+import React from 'react';
+import { Home, Phone, Mail, Moon, Sun, LogOut, ArrowRight, MapPin, Bed, Bath, Square } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-
-interface PersonDetail {
-  id: string;
-  name: string;
-  age: number;
-  occupation: string;
-  income: number;
-  email: string;
-  phone: string;
-}
 
 interface PropertyListing {
   id: string;
@@ -115,57 +105,6 @@ const HomePage: React.FC<HomePageProps> = ({
   setIsDarkMode,
   onNavigateToProject
 }) => {
-  const [people, setPeople] = useState<PersonDetail[]>([]);
-  const [currentPerson, setCurrentPerson] = useState<PersonDetail>({
-    id: '',
-    name: '',
-    age: 0,
-    occupation: '',
-    income: 0,
-    email: '',
-    phone: ''
-  });
-
-  const handleAddPerson = () => {
-    if (people.length >= 10) {
-      alert('Maximum 10 people can be added');
-      return;
-    }
-    
-    if (!currentPerson.name || !currentPerson.email) {
-      alert('Name and email are required');
-      return;
-    }
-
-    const newPerson = {
-      ...currentPerson,
-      id: Date.now().toString()
-    };
-
-    setPeople([...people, newPerson]);
-    setCurrentPerson({
-      id: '',
-      name: '',
-      age: 0,
-      occupation: '',
-      income: 0,
-      email: '',
-      phone: ''
-    });
-  };
-
-  const handleDeletePerson = (id: string) => {
-    setPeople(people.filter(person => person.id !== id));
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCurrentPerson(prev => ({
-      ...prev,
-      [name]: name === 'age' || name === 'income' ? Number(value) : value
-    }));
-  };
-
   const formatPrice = (price: number) => {
     if (price >= 10000000) {
       return `₹${(price / 10000000).toFixed(1)} Cr`;
@@ -222,7 +161,7 @@ const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Featured Properties Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {SAMPLE_PROPERTIES.map((property) => (
               <div
                 key={property.id}
@@ -279,116 +218,6 @@ const HomePage: React.FC<HomePageProps> = ({
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Add Person Section Title */}
-          <div className="flex items-center gap-3 mb-6 sm:mb-8">
-            <Users className="w-6 sm:w-8 h-6 sm:h-8 text-rose-600 dark:text-rose-500" />
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">Add Person Details</h2>
-          </div>
-
-          {/* Input Form */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div>
-              <input
-                type="text"
-                name="name"
-                value={currentPerson.name}
-                onChange={handleInputChange}
-                placeholder="Full Name *"
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white mb-4"
-              />
-              <input
-                type="email"
-                name="email"
-                value={currentPerson.email}
-                onChange={handleInputChange}
-                placeholder="Email Address *"
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white mb-4"
-              />
-              <input
-                type="tel"
-                name="phone"
-                value={currentPerson.phone}
-                onChange={handleInputChange}
-                placeholder="Phone Number"
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
-              />
-            </div>
-            <div>
-              <input
-                type="number"
-                name="age"
-                value={currentPerson.age || ''}
-                onChange={handleInputChange}
-                placeholder="Age"
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white mb-4"
-              />
-              <input
-                type="text"
-                name="occupation"
-                value={currentPerson.occupation}
-                onChange={handleInputChange}
-                placeholder="Occupation"
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white mb-4"
-              />
-              <input
-                type="number"
-                name="income"
-                value={currentPerson.income || ''}
-                onChange={handleInputChange}
-                placeholder="Annual Income"
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-white"
-              />
-            </div>
-          </div>
-
-          {/* Add Person Button */}
-          <button
-            onClick={handleAddPerson}
-            disabled={people.length >= 10}
-            className="w-full bg-rose-600 text-white py-2 sm:py-3 rounded-lg hover:bg-rose-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed mb-6 sm:mb-8 text-sm sm:text-base"
-          >
-            <UserPlus className="w-5 h-5" />
-            Add Person ({people.length}/10)
-          </button>
-
-          {/* People List */}
-          <div className="space-y-3 sm:space-y-4">
-            {people.map((person) => (
-              <div
-                key={person.id}
-                className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0"
-              >
-                <div>
-                  <h3 className="font-semibold text-gray-800 dark:text-white text-sm sm:text-base">{person.name}</h3>
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-                    {person.occupation} • {person.age} years • ₹{person.income.toLocaleString('en-IN')}
-                  </p>
-                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500">
-                    {person.email} • {person.phone}
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleDeletePerson(person.id)}
-                  className="self-end sm:self-center p-2 text-red-500 hover:bg-red-100 rounded-full transition-colors"
-                >
-                  <Trash2 className="w-4 sm:w-5 h-4 sm:h-5" />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom Buttons */}
-          <div className="mt-6 sm:mt-8 space-y-3 sm:space-y-4">
-            {people.length >= 5 && (
-              <button
-                onClick={onNavigateToProject}
-                className="w-full bg-blue-600 text-white py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
-              >
-                Continue to Project
-              </button>
-            )}
           </div>
         </div>
       </div>
