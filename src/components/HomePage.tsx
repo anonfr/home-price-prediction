@@ -227,7 +227,7 @@ const HomePage: React.FC<HomePageProps> = ({
             className="w-full bg-rose-600 text-white py-2.5 sm:py-3 rounded-lg hover:bg-rose-700 transition-colors mb-6 sm:mb-8 flex items-center justify-center gap-2 text-sm sm:text-base"
           >
             <Home className="w-4 h-4 sm:w-5 sm:h-5" />
-            Make New Prediction
+            Go to Prediction
           </button>
 
           {/* Saved Predictions */}
